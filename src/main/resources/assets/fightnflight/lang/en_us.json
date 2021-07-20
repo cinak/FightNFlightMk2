@@ -1,0 +1,10 @@
+{
+  "item.fightnflight.eternal_snow": "Eternal Snow",
+  "item.fightnflight.rajthor_spawn_egg": "Rajthor Spawn Egg",
+  "entity.fightnflight.rajthor_entity": "Rajthor",
+  "sound.entity.rajthor_entity.footsteps": "Rajthor walks",
+  "sound.entity.rajthor_entity.breath_attack": "Rajthor uses fireball",
+  "sound.entity.rajthor_entity.hissing": "Rajthor hisses",
+  "effect.fightnflight.bashed_effect":"Bashed"
+
+}

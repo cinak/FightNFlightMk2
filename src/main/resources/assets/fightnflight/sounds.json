@@ -1,0 +1,39 @@
+{
+  "entity.rajthor_entity.breath": {
+    "category" : "entity",
+    "subtitle" : "sound.entity.rajthor_entity.breath_attack",
+    "sounds": [
+      "fightnflight:rajthor_breath"
+    ]
+  },
+  "entity.rajthor_entity.walking": {
+    "category" : "entity",
+    "subtitle" : "sound.entity.rajthor_entity.footsteps",
+    "sounds": [
+      "fightnflight:rajthor_walking"
+    ]
+  },
+  "entity.rajthor_entity.hisss": {
+    "category" : "entity",
+    "subtitle" : "sound.entity.rajthor_entity.hissing",
+    "sounds": [
+      "fightnflight:rajthor_hisss",
+      "fightnflight:rajthor_hisss2"
+    ]
+  },
+  "entity.rajthor_entity.hurt": {
+    "category" : "entity",
+    "subtitle" : "sound.entity.rajthor_entity.hurt",
+    "sounds": [
+      "fightnflight:rajthor_hurt",
+      "fightnflight:rajthor_hurt2"
+    ]
+  },
+  "entity.rajthor_entity.death": {
+    "category" : "entity",
+    "subtitle" : "sound.entity.rajthor_entity.dies",
+    "sounds": [
+      "fightnflight:rajthor_death"
+    ]
+  }
+}

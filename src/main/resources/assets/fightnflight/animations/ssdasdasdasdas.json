@@ -1,0 +1,50 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.Rajthor.walk": {
+			"animation_length": 0.84,
+			"bones": {
+				"rightlegfront": {
+					"rotation": {
+						"vector": [-30, 0, 0]
+					}
+				},
+				"bone8": {
+					"rotation": {
+						"vector": [7.5, 0, 0]
+					}
+				},
+				"bone9": {
+					"rotation": {
+						"vector": [22.5, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0.3, 1]
+					}
+				},
+				"bone3": {
+					"rotation": {
+						"vector": [-20, 0, 0]
+					}
+				},
+				"bone4": {
+					"rotation": {
+						"vector": [-15, 0, 0]
+					}
+				},
+				"bone6": {
+					"rotation": {
+						"vector": [32.5, 0, 0]
+					},
+					"position": {
+						"vector": [0, -0.9, 0.6]
+					}
+				}
+			}
+		},
+		"animation.Rajthor.Idle": {
+			"loop": true
+		}
+	},
+	"geckolib_format_version": 2
+}

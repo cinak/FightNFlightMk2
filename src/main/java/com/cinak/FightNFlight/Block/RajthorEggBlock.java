@@ -38,10 +38,13 @@ public class RajthorEggBlock extends Block {
                 .sound(SoundType.BONE_BLOCK)
                 .harvestLevel(3)
                 .harvestTool(ToolType.PICKAXE)
+                .noOcclusion()
+                .randomTicks()
         );
         this.registerDefaultState(this.stateDefinition.any().setValue(HATCH, Integer.valueOf(0)));
 
     }
+
     public void randomTick(BlockState p_225542_1_, ServerWorld p_225542_2_, BlockPos p_225542_3_, Random p_225542_4_) {
         if (this.shouldUpdateHatchLevel(p_225542_2_) && onIce(p_225542_2_, p_225542_3_)) {
             int i = p_225542_1_.getValue(HATCH);

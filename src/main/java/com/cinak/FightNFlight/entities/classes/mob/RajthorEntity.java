@@ -193,7 +193,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
     protected void ageBoundaryReached() {
         super.ageBoundaryReached();
         if (!this.isBaby() && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
-            this.spawnAtLocation(Items.SCUTE, 1);
+            this.spawnAtLocation(RegistryHandler.RAJTHOR_MAINSCALE.get(), 1);
         }
 
     }

@@ -23,12 +23,12 @@ public class ModEntityTypes extends EntityType {
     public static DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, FightNFlight.MOD_ID);
 
 
-    public static final RegistryObject<EntityType<RajthorEntity>> RAJTHOR = ENTITY_TYPES.register("rajthor",
+    public static final RegistryObject<EntityType<RajthorEntity>> RAJTHOR = ENTITY_TYPES.register("rajthor_entity",
             () -> EntityType.Builder.of(RajthorEntity::new, EntityClassification.CREATURE)
                     .sized(2.4F,2.2F)
                     .clientTrackingRange(8)
                     .fireImmune()
-                    .build(new ResourceLocation(FightNFlight.MOD_ID, "rajthor").toString())
+                    .build(new ResourceLocation(FightNFlight.MOD_ID, "rajthor_entity").toString())
 
     );
 

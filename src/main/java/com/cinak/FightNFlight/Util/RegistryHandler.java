@@ -32,6 +32,7 @@ public class RegistryHandler {
 
     }
     public static final RegistryObject<Item> ETERNAL_SNOW = ITEMS.register("eternal_snow", ItemBase::new);
+    public static final RegistryObject<Item> RAJTHOR_MAINSCALE = ITEMS.register("rajthor_mainscale", ItemBase::new);
     public static final RegistryObject<Item> RAJTHOR_CHARGE = ITEMS.register("rajthor_charge", RajthorChargeItem::new);
     public static final RegistryObject<FightNFlightSpawnEgg> RAJTHOR_SPAWN_EGG = ITEMS.register("rajthor_spawn_egg",
             () -> new FightNFlightSpawnEgg(ModEntityTypes.RAJTHOR, 0xA6F5F3 , 0x2B9A97, new Item.Properties().tab(FightNFlight.TAB)));

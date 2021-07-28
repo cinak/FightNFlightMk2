@@ -43,6 +43,8 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class DrasterrEntity extends TameableEntity implements IAngerable, IAnimatable {
+    private RajthorEntity RajthorEntity;
+
     public DrasterrEntity(EntityType<? extends TameableEntity> p_i48574_1_, World p_i48574_2_) {
         super(p_i48574_1_, p_i48574_2_);
         setTame(false);
@@ -117,7 +119,7 @@ public class DrasterrEntity extends TameableEntity implements IAngerable, IAnima
         this.goalSelector.addGoal(0, new FightNFlightSitGoal(this));
         this.goalSelector.addGoal(0, new FindWaterGoal(this));
         this.goalSelector.addGoal(1, new DrasterrEntity.MeleeAttackGoal());
-        this.goalSelector.addGoal(3, new FightNflightFollowGoal(this, 4.0D, 10.0F, 2.0F, false));
+        this.goalSelector.addGoal(3, new FightNflightFollowGoal(this,RajthorEntity, 4.0D, 10.0F, 2.0F, false));
         this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new RandomSwimmingGoal(this, 1.0D, 10));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));

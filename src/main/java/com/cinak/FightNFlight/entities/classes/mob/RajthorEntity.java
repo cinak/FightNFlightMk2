@@ -332,15 +332,15 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
     };
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FightNFlightSitGoal(this));
-        this.goalSelector.addGoal(1, new RajthorEntity.MeleeAttackGoal());
-        this.goalSelector.addGoal(1, new RajthorEntity.RajthorEntityEggLayGoal(this, 1.0D));
-        this.goalSelector.addGoal(2, new RajthorEntity.FireballAttackGoal(this, this.rajthorfireEntity));
-        this.goalSelector.addGoal(3, new FightNflightFollowGoal(this, 4.0D, 10.0F, 2.0F, false));
-        this.goalSelector.addGoal(4, new MateGoal(this, 1.0D));
-        this.goalSelector.addGoal(5,  new RajthorEntity.Land(this, 3D, 10));
-        this.goalSelector.addGoal(6, new RandomSwimmingGoal(this, 1.0D, 10));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(1, new MateGoal(this, 1.0D));
+        this.goalSelector.addGoal(2, new RajthorEntity.MeleeAttackGoal());
+        this.goalSelector.addGoal(3, new RajthorEntity.RajthorEntityEggLayGoal(this, 1.0D));
+        this.goalSelector.addGoal(4, new RajthorEntity.FireballAttackGoal(this, this.rajthorfireEntity));
+        this.goalSelector.addGoal(5, new FightNflightFollowGoal(this,this, 4.0D, 30.0F, 2.0F, false));
+        this.goalSelector.addGoal(6,  new RajthorEntity.Land(this, 3D, 10));
+        this.goalSelector.addGoal(7, new RandomSwimmingGoal(this, 1.0D, 10));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(9, new LookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
         this.targetSelector.addGoal(3, new RajthorEntity.HurtByTargetGoal());
@@ -350,7 +350,9 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
         this.targetSelector.addGoal(7, new NonTamedTargetGoal<>(this, TurtleEntity.class, false, TurtleEntity.BABY_ON_LAND_SELECTOR));
         this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, FoxEntity.class, 10, true, true, (Predicate<LivingEntity>)null));
         this.targetSelector.addGoal(9, new ResetAngerGoal<>(this, true));
-    }   public boolean canFallInLove() {
+    }
+
+    public boolean canFallInLove() {
         return super.canFallInLove() && !this.hasEgg();
     }
 
@@ -569,7 +571,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
         if (p_205022_2_.getFluidState(p_205022_1_).is(FluidTags.WATER)) {
             return 10.0F;
         } else {
-            return TurtleEggBlock.onSand(p_205022_2_, p_205022_1_) ? 10.0F : p_205022_2_.getBrightness(p_205022_1_) - 0.5F;
+            return RajthorEggBlock.onIce(p_205022_2_, p_205022_1_) ? 10.0F : p_205022_2_.getBrightness(p_205022_1_) - 0.5F;
         }
     }
     public boolean hasEgg() {
@@ -626,45 +628,45 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
     }
 
     static class RajthorEntityEggLayGoal extends MoveToBlockGoal {
-        private final RajthorEntity turtle;
+        private final RajthorEntity rajthorEntity;
 
         RajthorEntityEggLayGoal(RajthorEntity p_i48818_1_, double p_i48818_2_) {
             super(p_i48818_1_, p_i48818_2_, 16);
-            this.turtle = p_i48818_1_;
+            this.rajthorEntity = p_i48818_1_;
         }
 
         public boolean canUse() {
-            return this.turtle.hasEgg()  ? super.canUse() : false;
+            return this.rajthorEntity.hasEgg()  ? super.canUse() : false;
         }
 
         public boolean canContinueToUse() {
-            return super.canContinueToUse() && this.turtle.hasEgg() ;
+            return super.canContinueToUse() && this.rajthorEntity.hasEgg() ;
         }
 
         public void tick() {
             super.tick();
-            BlockPos blockpos = this.turtle.blockPosition();
-            if (!this.turtle.isInWater() && this.isReachedTarget()) {
-                if (this.turtle.layEggCounter < 1) {
-                    this.turtle.setLayingEgg(true);
-                } else if (this.turtle.layEggCounter > 200) {
-                    World world = this.turtle.level;
-                    world.playSound((PlayerEntity)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundCategory.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
+            BlockPos blockpos = this.rajthorEntity.blockPosition();
+            if (!this.rajthorEntity.isInWater() && this.isReachedTarget()) {
+                if (this.rajthorEntity.layEggCounter < 1) {
+                    this.rajthorEntity.setLayingEgg(true);
+                } else if (this.rajthorEntity.layEggCounter > 200) {
+                    World world = this.rajthorEntity.level;
+                    world.playSound(null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundCategory.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
                     world.setBlock(this.blockPos.above(), RegistryHandler.RAJTHOR_EGG_BLOCK.get().defaultBlockState(), 3);
-                    this.turtle.setHasEgg(false);
-                    this.turtle.setLayingEgg(false);
-                    this.turtle.setInLoveTime(600);
+                    this.rajthorEntity.setHasEgg(false);
+                    this.rajthorEntity.setLayingEgg(false);
+                    this.rajthorEntity.setInLoveTime(600);
                 }
 
-                if (this.turtle.isLayingEgg()) {
-                    this.turtle.layEggCounter++;
+                if (this.rajthorEntity.isLayingEgg()) {
+                    this.rajthorEntity.layEggCounter++;
                 }
             }
 
         }
 
         protected boolean isValidTarget(IWorldReader p_179488_1_, BlockPos p_179488_2_) {
-            return !p_179488_1_.isEmptyBlock(p_179488_2_.above()) ? false : TurtleEggBlock.isSand(p_179488_1_, p_179488_2_);
+            return !p_179488_1_.isEmptyBlock(p_179488_2_.above()) ? false : RajthorEggBlock.isIce(p_179488_1_, p_179488_2_);
         }
     }
     public void startPersistentAngerTimer() {

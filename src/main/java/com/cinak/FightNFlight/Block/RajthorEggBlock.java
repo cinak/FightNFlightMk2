@@ -4,22 +4,20 @@ import java.util.Random;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
-import com.cinak.FightNFlight.Util.RegistryHandler;
 import com.cinak.FightNFlight.entities.ModEntityTypes;
 import com.cinak.FightNFlight.entities.classes.mob.RajthorEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -44,37 +42,27 @@ public class RajthorEggBlock extends Block {
         this.registerDefaultState(this.stateDefinition.any().setValue(HATCH, Integer.valueOf(0)));
 
     }
-
-
     public void randomTick(BlockState p_225542_1_, ServerWorld p_225542_2_, BlockPos p_225542_3_, Random p_225542_4_) {
         if (this.shouldUpdateHatchLevel(p_225542_2_) && onIce(p_225542_2_, p_225542_3_)) {
             int i = p_225542_1_.getValue(HATCH);
             if (i < 2) {
-                BlockPos blockpos = p_225542_3_.offset(p_225542_2_.random.nextInt(16) - p_225542_2_.random.nextInt(16), p_225542_2_.random.nextInt(8) - p_225542_2_.random.nextInt(8), p_225542_2_.random.nextInt(16) - p_225542_2_.random.nextInt(16));
-
-                p_225542_2_.playSound((PlayerEntity)null, p_225542_3_, RegistryHandler.RAJTHOR_HURT.get(), SoundCategory.BLOCKS, 0.7F, 0.9F + p_225542_4_.nextFloat() * 0.2F);
-                double d0 = p_225542_2_.random.nextDouble();
-                double d1 = MathHelper.lerp(d0, (double)blockpos.getX(), (double)p_225542_3_.getX()) + (p_225542_2_.random.nextDouble() - 0.5D) + 0.5D;
-                double d2 = MathHelper.lerp(d0, (double)blockpos.getY(), (double)p_225542_3_.getY()) + p_225542_2_.random.nextDouble() - 0.5D;
-                double d3 = MathHelper.lerp(d0, (double)blockpos.getZ(), (double)p_225542_3_.getZ()) + (p_225542_2_.random.nextDouble() - 0.5D) + 0.5D;
-                float f = (p_225542_2_.random.nextFloat() - 0.5F) * 0.2F;
-                float f1 = (p_225542_2_.random.nextFloat() - 0.5F) * 0.2F;
-                float f2 = (p_225542_2_.random.nextFloat() - 0.5F) * 0.2F;
-                p_225542_2_.addParticle(ParticleTypes.PORTAL, d1, d2, d3, (double)f, (double)f1, (double)f2);
+                p_225542_2_.playSound(null, p_225542_3_, SoundEvents.TURTLE_EGG_CRACK, SoundCategory.BLOCKS, 0.7F, 0.9F + p_225542_4_.nextFloat() * 0.2F);
                 p_225542_2_.setBlock(p_225542_3_, p_225542_1_.setValue(HATCH, Integer.valueOf(i + 1)), 2);
             } else {
-                p_225542_2_.playSound((PlayerEntity)null, p_225542_3_, RegistryHandler.RAJTHOR_HURT.get(), SoundCategory.BLOCKS, 0.7F, 0.9F + p_225542_4_.nextFloat() * 0.2F);
+                p_225542_2_.playSound(null, p_225542_3_, SoundEvents.TURTLE_EGG_HATCH, SoundCategory.BLOCKS, 0.7F, 0.9F + p_225542_4_.nextFloat() * 0.2F);
                 p_225542_2_.removeBlock(p_225542_3_, false);
 
-                    p_225542_2_.levelEvent(2001, p_225542_3_, Block.getId(p_225542_1_));
-                    RajthorEntity rajthorEntity = ModEntityTypes.RAJTHOR.get().create(p_225542_2_);
-                    rajthorEntity.setAge(-24000);
-                    p_225542_2_.addFreshEntity(rajthorEntity);
+                p_225542_2_.levelEvent(2001, p_225542_3_, Block.getId(p_225542_1_));
+                RajthorEntity rajthorEntity = ModEntityTypes.RAJTHOR.get().create(p_225542_2_);
+                rajthorEntity.setAge(-24000);
+                p_225542_2_.addFreshEntity(rajthorEntity);
 
             }
         }
 
     }
+
+
     public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
         return SHAPE;
     }
@@ -112,12 +100,13 @@ public class RajthorEggBlock extends Block {
 
     }
 
+
     private boolean shouldUpdateHatchLevel(World p_203169_1_) {
         float f = p_203169_1_.getTimeOfDay(1.0F);
         if ((double)f < 0.69D && (double)f > 0.65D) {
             return true;
         } else {
-            return p_203169_1_.random.nextInt(500) == 0;
+            return p_203169_1_.random.nextInt(50) == 0;
         }
     }
 

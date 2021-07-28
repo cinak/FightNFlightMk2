@@ -3,6 +3,7 @@ package com.cinak.FightNFlight.entities.goals;
 import java.util.EnumSet;
 
 import com.cinak.FightNFlight.entities.classes.mob.FightAndFlightMob;
+import com.cinak.FightNFlight.entities.classes.mob.RajthorEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.LivingEntity;
@@ -18,6 +19,7 @@ import net.minecraft.world.IWorldReader;
 
 public class FightNflightFollowGoal extends Goal {
     private final TameableEntity tamable;
+    private final RajthorEntity rajthorEntity;
     private LivingEntity owner;
     private final IWorldReader level;
     private final double speedModifier;
@@ -28,8 +30,9 @@ public class FightNflightFollowGoal extends Goal {
     private float oldWaterCost;
     private final boolean canFly;
 
-    public FightNflightFollowGoal(TameableEntity p_i225711_1_, double p_i225711_2_, float p_i225711_4_, float p_i225711_5_, boolean p_i225711_6_) {
+    public FightNflightFollowGoal(TameableEntity p_i225711_1_,RajthorEntity rajthorEntity, double p_i225711_2_, float p_i225711_4_, float p_i225711_5_, boolean p_i225711_6_) {
         this.tamable = p_i225711_1_;
+        this.rajthorEntity = rajthorEntity;
         this.level = p_i225711_1_.level;
         this.speedModifier = p_i225711_2_;
         this.navigation = p_i225711_1_.getNavigation();
@@ -44,6 +47,8 @@ public class FightNflightFollowGoal extends Goal {
         if (livingentity == null) {
             return false;
         } else if (livingentity.isSpectator()) {
+            return false;
+        }else if (rajthorEntity.hasEgg()) {
             return false;
         } else if (this.tamable.isOrderedToSit()) {
             return false;

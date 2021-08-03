@@ -367,11 +367,10 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
         this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
         this.targetSelector.addGoal(3, new RajthorEntity.HurtByTargetGoal());
         this.targetSelector.addGoal(4, new RajthorEntity.AttackPlayerGoal());
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(6, new NonTamedTargetGoal<>(this, AnimalEntity.class, false, PREY_SELECTOR));
-        this.targetSelector.addGoal(7, new NonTamedTargetGoal<>(this, TurtleEntity.class, false, TurtleEntity.BABY_ON_LAND_SELECTOR));
-        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, FoxEntity.class, 10, true, true, (Predicate<LivingEntity>)null));
-        this.targetSelector.addGoal(9, new ResetAngerGoal<>(this, true));
+        this.targetSelector.addGoal(5, new NonTamedTargetGoal<>(this, AnimalEntity.class, false, PREY_SELECTOR));
+        this.targetSelector.addGoal(6, new NonTamedTargetGoal<>(this, TurtleEntity.class, false, TurtleEntity.BABY_ON_LAND_SELECTOR));
+        this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, FoxEntity.class, 10, true, true, (Predicate<LivingEntity>)null));
+        this.targetSelector.addGoal(8, new ResetAngerGoal<>(this, true));
     }
 
     public boolean canFallInLove() {

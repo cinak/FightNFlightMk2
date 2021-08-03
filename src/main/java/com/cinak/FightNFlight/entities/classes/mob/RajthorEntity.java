@@ -153,15 +153,6 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
             super(RajthorEntity.this, 1.25D, true);
         }
 
-        public boolean canUse() {
-            if (RajthorEntity.this.isBaby()) {
-                return false;
-            } else {
-
-
-                return true;
-            }
-        }
         protected void checkAndPerformAttack(LivingEntity p_190102_1_, double p_190102_2_) {
             double d0 = this.getAttackReachSqr(p_190102_1_);
             if (p_190102_2_ <= d0 && this.isTimeToAttack()) {
@@ -354,11 +345,11 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
     };
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FightNFlightSitGoal(this));
-        this.goalSelector.addGoal(1, new MateGoal(this, 4.0D));
-        this.goalSelector.addGoal(1, new RajthorEntity.RajthorEntityEggLayGoal(this, 4.0D));
+        this.goalSelector.addGoal(1, new RajthorEntity.MateGoal(this, 1.0D));
+        this.goalSelector.addGoal(1, new RajthorEntity.RajthorEntityEggLayGoal(this, 1.0D));
         this.goalSelector.addGoal(2, new RajthorEntity.MeleeAttackGoal());
         this.goalSelector.addGoal(3, new RajthorEntity.FireballAttackGoal(this, this.rajthorfireEntity));
-        this.goalSelector.addGoal(4, new FightNflightFollowGoal(this,this, 8.0D, 10.0F, 2.0F, false));
+        this.goalSelector.addGoal(4, new FightNflightFollowGoal(this,this, 10.0D, 10.0F, 2.0F, false));
         this.goalSelector.addGoal(5,  new RajthorEntity.Land(this, 3D, 10));
         this.goalSelector.addGoal(6, new RandomSwimmingGoal(this, 1.0D, 10));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
@@ -367,11 +358,10 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
         this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
         this.targetSelector.addGoal(3, new RajthorEntity.HurtByTargetGoal());
         this.targetSelector.addGoal(4, new RajthorEntity.AttackPlayerGoal());
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(6, new NonTamedTargetGoal<>(this, AnimalEntity.class, false, PREY_SELECTOR));
-        this.targetSelector.addGoal(7, new NonTamedTargetGoal<>(this, TurtleEntity.class, false, TurtleEntity.BABY_ON_LAND_SELECTOR));
-        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, FoxEntity.class, 10, true, true, (Predicate<LivingEntity>)null));
-        this.targetSelector.addGoal(9, new ResetAngerGoal<>(this, true));
+        this.targetSelector.addGoal(5, new NonTamedTargetGoal<>(this, AnimalEntity.class, false, PREY_SELECTOR));
+        this.targetSelector.addGoal(6, new NonTamedTargetGoal<>(this, TurtleEntity.class, false, TurtleEntity.BABY_ON_LAND_SELECTOR));
+        this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, FoxEntity.class, 10, true, true, (Predicate<LivingEntity>)null));
+        this.targetSelector.addGoal(8, new ResetAngerGoal<>(this, true));
     }
 
     public boolean canFallInLove() {
@@ -450,15 +440,11 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
     public boolean canMate(AnimalEntity p_70878_1_) {
         if (p_70878_1_ == this) {
             return false;
-        } else if (!this.isTame()) {
-            return false;
-        } else if (!(p_70878_1_ instanceof RajthorEntity)) {
+        }else if (!(p_70878_1_ instanceof RajthorEntity)) {
             return false;
         } else {
             RajthorEntity rajthorEntity = (RajthorEntity) p_70878_1_;
-            if (!rajthorEntity.isTame()) {
-                return false;
-            } else if (rajthorEntity.isInSittingPose()) {
+             if (rajthorEntity.isInSittingPose()) {
                 return false;
             } else {
                 return this.isInLove() && rajthorEntity.isInLove();
@@ -628,7 +614,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
         }
 
         public boolean canUse() {
-            return super.canUse() && !this.rajthorEntity.hasEgg() && !this.rajthorEntity.isTrusting();
+            return super.canUse() && !this.rajthorEntity.hasEgg() && this.rajthorEntity.isTrusting();
         }
 
         protected void breed() {
@@ -764,7 +750,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
 
         return flag;
     }
-    public boolean isFood(ItemStack p_70877_1_) {
+    public boolean isFoody(ItemStack p_70877_1_) {
         Item item = p_70877_1_.getItem();
         return item.isEdible() && item.getFoodProperties().isMeat();
     }
@@ -790,8 +776,9 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
             boolean flag = this.isOwnedBy(p_230254_1_) || this.isTame() || item == RegistryHandler.ETERNAL_SNOW.get() && !this.isTame() && !this.isAngry();
             return flag ? ActionResultType.CONSUME : ActionResultType.PASS;
         } else {
+
             if (this.isTame()) {
-                if (this.isFood(itemstack) && this.getHealth() < this.getMaxHealth()) {
+                if (this.isFoody(itemstack) && this.getHealth() < this.getMaxHealth()) {
                     if (!p_230254_1_.abilities.instabuild) {
                         itemstack.shrink(1);
                     }
@@ -805,12 +792,18 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
                     this.jumping = false;
                     this.navigation.stop();
                     this.setTarget(null);
+
                     return ActionResultType.SUCCESS;
                 }
-            } else if (item == RegistryHandler.ETERNAL_SNOW.get() && !this.isAngry() && this.isBaby()) {
+            } else if(this.isFoody(itemstack) && (isTrusting() ||  isTame()) && !isBaby() ){
+                this.usePlayerItem(p_230254_1_, itemstack);
+                this.setInLove(p_230254_1_);
+                return ActionResultType.SUCCESS;
+            }else if (item == RegistryHandler.ETERNAL_SNOW.get() && !this.isAngry() && this.isBaby()) {
                 if (!p_230254_1_.abilities.instabuild) {
                     itemstack.shrink(1);
                 }
+
 
                 if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, p_230254_1_)) {
                     this.tame(p_230254_1_);
@@ -828,10 +821,10 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
                 return ActionResultType.SUCCESS;
             }
             if (this.level.isClientSide) {
-                boolean flag = this.isOwnedBy(p_230254_1_) || this.isTame() || item == Items.SALMON && !this.isTame() && !this.isAngry();
+                boolean flag = this.isOwnedBy(p_230254_1_) || this.isTame() || item == Items.BLUE_ORCHID && !this.isTame() && !this.isAngry() && !this.isBaby();
                 return flag ? ActionResultType.CONSUME : ActionResultType.PASS;
             }
-            else if (item == Items.SALMON && !this.isAngry() && !this.isTame() && !this.isTrusting()) {
+            else if (item == Items.BLUE_ORCHID && !this.isAngry() && !this.isTame() && !this.isTrusting() && !this.isBaby()) {
                 if (!p_230254_1_.abilities.instabuild) {
                     itemstack.shrink(1);
                 }
@@ -839,8 +832,6 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
                     this.setTrusting(true);
                     this.navigation.stop();
                     this.setTarget(null);
-
-                    this.level.broadcastEntityEvent(this, (byte)7);
 
 
 

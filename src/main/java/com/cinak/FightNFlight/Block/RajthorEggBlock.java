@@ -1,6 +1,7 @@
 package com.cinak.FightNFlight.Block;
 
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
@@ -8,6 +9,9 @@ import com.cinak.FightNFlight.entities.ModEntityTypes;
 import com.cinak.FightNFlight.entities.classes.mob.RajthorEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
@@ -55,15 +59,18 @@ public class RajthorEggBlock extends Block {
                 p_225542_2_.playSound(null, p_225542_3_, SoundEvents.TURTLE_EGG_HATCH, SoundCategory.BLOCKS, 0.7F, 0.9F + p_225542_4_.nextFloat() * 0.2F);
                 p_225542_2_.removeBlock(p_225542_3_, false);
 
-                p_225542_2_.levelEvent(2001, p_225542_3_, Block.getId(p_225542_1_));
-                RajthorEntity rajthorEntity = ModEntityTypes.RAJTHOR.get().create(p_225542_2_);
-                rajthorEntity.setAge(-24000);
-                p_225542_2_.addFreshEntity(rajthorEntity);
-
+                for(int j = 0; j < 1; ++j) {
+                    p_225542_2_.levelEvent(2001, p_225542_3_, Block.getId(p_225542_1_));
+                    RajthorEntity rajthorEntity = ModEntityTypes.RAJTHOR.get().create(p_225542_2_);
+                    rajthorEntity.setAge(-24000);
+                    rajthorEntity.moveTo((double)p_225542_3_.getX() + 0.3D + (double)j * 0.2D, p_225542_3_.getY(), (double)p_225542_3_.getZ() + 0.3D, 0.0F, 0.0F);
+                    p_225542_2_.addFreshEntity(rajthorEntity);
+                }
             }
         }
 
     }
+
 
 
     public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {

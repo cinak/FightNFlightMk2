@@ -12,7 +12,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.TurtleEggBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -118,6 +117,19 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
 
     }
 
+    private static final DataParameter<Boolean> IS_TRUSTING = EntityDataManager.defineId(RajthorEntity.class, DataSerializers.BOOLEAN);
+    public boolean isTrusting() {
+        return this.entityData.get(IS_TRUSTING);
+    }
+
+    public void setTrusting(boolean p_189794_1_) {
+        this.entityData.set(IS_TRUSTING, p_189794_1_);
+    }
+
+
+
+
+
 
     public boolean isAttacking() {
         return this.entityData.get(DATA_ATTACKING_ID);
@@ -141,6 +153,15 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
             super(RajthorEntity.this, 1.25D, true);
         }
 
+        public boolean canUse() {
+            if (RajthorEntity.this.isBaby()) {
+                return false;
+            } else {
+
+
+                return true;
+            }
+        }
         protected void checkAndPerformAttack(LivingEntity p_190102_1_, double p_190102_2_) {
             double d0 = this.getAttackReachSqr(p_190102_1_);
             if (p_190102_2_ <= d0 && this.isTimeToAttack()) {
@@ -176,6 +197,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
         super.defineSynchedData();
         this.entityData.define(DATA_ATTACKING_ID, false);
         this.entityData.define(DATA_IS_CHARGING, false);
+        this.entityData.define(IS_TRUSTING, false);
         this.entityData.define(HAS_EGG, false);
         this.entityData.define(LAYING_EGG, false);
     }
@@ -264,13 +286,12 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
         }
     }
 
-
     public void travel(Vector3d p_213352_1_) {
         if (this.isEffectiveAi() && this.isInWater()) {
             this.moveRelative(0.1F, p_213352_1_);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
-            if (this.getTarget() == null) {
+            if (this.getTarget() == null ) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.005D, 0.0D));
             }
         } else {
@@ -278,6 +299,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
         }
 
     }
+
     static class Navigator extends SwimmerPathNavigator {
         Navigator(RajthorEntity p_i48815_1_, World p_i48815_2_) {
             super(p_i48815_1_, p_i48815_2_);
@@ -332,15 +354,15 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
     };
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FightNFlightSitGoal(this));
-        this.goalSelector.addGoal(1, new MateGoal(this, 1.0D));
+        this.goalSelector.addGoal(1, new MateGoal(this, 4.0D));
+        this.goalSelector.addGoal(1, new RajthorEntity.RajthorEntityEggLayGoal(this, 4.0D));
         this.goalSelector.addGoal(2, new RajthorEntity.MeleeAttackGoal());
-        this.goalSelector.addGoal(3, new RajthorEntity.RajthorEntityEggLayGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new RajthorEntity.FireballAttackGoal(this, this.rajthorfireEntity));
-        this.goalSelector.addGoal(5, new FightNflightFollowGoal(this,this, 4.0D, 30.0F, 2.0F, false));
-        this.goalSelector.addGoal(6,  new RajthorEntity.Land(this, 3D, 10));
-        this.goalSelector.addGoal(7, new RandomSwimmingGoal(this, 1.0D, 10));
-        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.addGoal(9, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(3, new RajthorEntity.FireballAttackGoal(this, this.rajthorfireEntity));
+        this.goalSelector.addGoal(4, new FightNflightFollowGoal(this,this, 8.0D, 10.0F, 2.0F, false));
+        this.goalSelector.addGoal(5,  new RajthorEntity.Land(this, 3D, 10));
+        this.goalSelector.addGoal(6, new RandomSwimmingGoal(this, 1.0D, 10));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
         this.targetSelector.addGoal(3, new RajthorEntity.HurtByTargetGoal());
@@ -403,8 +425,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
 
     }
 
-
-
+    @Nullable
     public RajthorEntity getBreedOffspring(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
         RajthorEntity rajthorEntity = ModEntityTypes.RAJTHOR.get().create(p_241840_1_);
         UUID uuid = this.getOwnerUUID();
@@ -415,7 +436,11 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
 
         return rajthorEntity;
     }
+    @Nullable
+    public ILivingEntityData finalizeSpawn(IServerWorld p_213386_1_, DifficultyInstance p_213386_2_, SpawnReason p_213386_3_, @Nullable ILivingEntityData p_213386_4_, @Nullable CompoundNBT p_213386_5_) {
 
+        return super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_, p_213386_4_, p_213386_5_);
+    }
     private BlockPos getTravelPos() {
         return this.entityData.get(TRAVEL_POS);
     }
@@ -440,6 +465,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
             }
         }
     }
+
     public boolean wantsToAttack(LivingEntity p_142018_1_, LivingEntity p_142018_2_) {
         if (!(p_142018_1_ instanceof CreeperEntity) && !(p_142018_1_ instanceof GhastEntity)) {
             if (p_142018_1_ instanceof RajthorEntity) {
@@ -518,7 +544,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
 
 
         public boolean canUse() {
-            return this.rajthorEntity.getTarget() != null;
+                return this.rajthorEntity.getTarget() != null && !this.rajthorEntity.isBaby();
         }
 
         public void start() {
@@ -602,7 +628,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
         }
 
         public boolean canUse() {
-            return super.canUse() && !this.rajthorEntity.hasEgg();
+            return super.canUse() && !this.rajthorEntity.hasEgg() && !this.rajthorEntity.isTrusting();
         }
 
         protected void breed() {
@@ -778,10 +804,10 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
                     this.setOrderedToSit(!this.isOrderedToSit());
                     this.jumping = false;
                     this.navigation.stop();
-                    this.setTarget((LivingEntity)null);
+                    this.setTarget(null);
                     return ActionResultType.SUCCESS;
                 }
-            } else if (item == RegistryHandler.ETERNAL_SNOW.get() && !this.isAngry()) {
+            } else if (item == RegistryHandler.ETERNAL_SNOW.get() && !this.isAngry() && this.isBaby()) {
                 if (!p_230254_1_.abilities.instabuild) {
                     itemstack.shrink(1);
                 }
@@ -792,7 +818,7 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
                     this.setOwnerUUID(uuid);
                     this.setTame(true);
                     this.navigation.stop();
-                    this.setTarget((LivingEntity)null);
+                    this.setTarget(null);
 
                     this.level.broadcastEntityEvent(this, (byte)7);
                 } else {
@@ -801,6 +827,26 @@ public class RajthorEntity extends TameableEntity implements IAngerable , IAnima
 
                 return ActionResultType.SUCCESS;
             }
+            if (this.level.isClientSide) {
+                boolean flag = this.isOwnedBy(p_230254_1_) || this.isTame() || item == Items.SALMON && !this.isTame() && !this.isAngry();
+                return flag ? ActionResultType.CONSUME : ActionResultType.PASS;
+            }
+            else if (item == Items.SALMON && !this.isAngry() && !this.isTame() && !this.isTrusting()) {
+                if (!p_230254_1_.abilities.instabuild) {
+                    itemstack.shrink(1);
+                }
+
+                    this.setTrusting(true);
+                    this.navigation.stop();
+                    this.setTarget(null);
+
+                    this.level.broadcastEntityEvent(this, (byte)7);
+
+
+
+                return ActionResultType.SUCCESS;
+            }
+
 
             return super.mobInteract(p_230254_1_, p_230254_2_);
         }

@@ -22,6 +22,7 @@ import software.bernie.geckolib3.GeckoLib;
 @Mod("fightnflight")
 public class FightNFlight
 {
+
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
